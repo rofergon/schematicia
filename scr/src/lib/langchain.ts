@@ -57,8 +57,14 @@ export class StructuredOutputParser<T> {
   }
 
   parse(text: string): T {
+    // Eliminar delimitadores de bloque de código Markdown si existen
+    const cleaned = text
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/```\s*$/i, '')
+      .trim()
     try {
-      const data = JSON.parse(text)
+      const data = JSON.parse(cleaned)
       return this.spec.validate(data)
     } catch (error) {
       if (error instanceof Error) {
@@ -143,6 +149,8 @@ export class ChatOpenAI {
         })
 
         const data: OpenAIResponseBody = await response.json()
+        // DEBUG: Mostrar la respuesta cruda de la API
+        console.log('[ChatOpenAI] Respuesta cruda de la API:', JSON.stringify(data, null, 2))
 
         if (!response.ok) {
           const errorMessage = data?.error?.message ?? 'Respuesta no válida del modelo.'
@@ -194,7 +202,7 @@ function extractTextFromResponse(data: OpenAIResponseBody): string | null {
     if (item?.message?.content) {
       const segments = item.message.content
       if (Array.isArray(segments)) {
-        const textSegment = segments.find((segment) => segment?.type === 'text')
+        const textSegment = segments.find((segment) => segment?.type === 'output_text' || segment?.type === 'text')
         if (textSegment && typeof textSegment.text === 'string') {
           return textSegment.text.trim()
         }
@@ -202,7 +210,7 @@ function extractTextFromResponse(data: OpenAIResponseBody): string | null {
     }
 
     if (Array.isArray(item?.content)) {
-      const textSegment = item.content.find((segment) => segment?.type === 'text')
+      const textSegment = item.content.find((segment) => segment?.type === 'output_text' || segment?.type === 'text')
       if (textSegment && typeof textSegment.text === 'string') {
         return textSegment.text.trim()
       }
