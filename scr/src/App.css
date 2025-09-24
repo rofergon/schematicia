@@ -318,6 +318,10 @@
   line-height: 1.6;
 }
 
+.schematic-canvas-wrapper {
+  position: relative;
+}
+
 .schematic-canvas {
   position: relative;
   background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.2), rgba(15, 23, 42, 0.7) 65%);
@@ -325,6 +329,38 @@
   border-radius: 22px;
   padding: 1.5rem;
   overflow: hidden;
+}
+
+.schematic-canvas__fullscreen-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.65);
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, color 150ms ease;
+  backdrop-filter: blur(10px);
+}
+
+.schematic-canvas__fullscreen-button:hover {
+  border-color: rgba(59, 130, 246, 0.65);
+  color: #f8fafc;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.schematic-canvas__fullscreen-button:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.8);
+  outline-offset: 3px;
 }
 
 .schematic-canvas::after {
@@ -338,6 +374,7 @@
 .schematic-canvas svg {
   width: 100%;
   height: auto;
+  display: block;
   color: #cbd5f5;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -392,6 +429,97 @@
   fill: rgba(191, 219, 254, 0.9);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.schematic-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.25rem, 2vw, 2rem);
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(18px);
+}
+
+.schematic-fullscreen__panel {
+  position: relative;
+  width: min(1200px, 96vw);
+  height: min(88vh, 880px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 2vw, 2.25rem);
+  border-radius: 26px;
+  background: radial-gradient(circle at 18% 12%, rgba(59, 130, 246, 0.25), rgba(15, 23, 42, 0.92) 70%);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 28px 90px rgba(8, 11, 23, 0.65);
+}
+
+.schematic-fullscreen__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.schematic-fullscreen__header h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.45rem;
+  color: #f8fafc;
+}
+
+.schematic-fullscreen__eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 197, 255, 0.8);
+}
+
+.schematic-fullscreen__close {
+  align-self: flex-start;
+  padding: 0.45rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+  color: #e2e8f0;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.schematic-fullscreen__close:hover {
+  border-color: rgba(248, 250, 252, 0.75);
+  color: #f8fafc;
+  box-shadow: 0 10px 32px rgba(129, 140, 248, 0.35);
+  transform: translateY(-1px);
+}
+
+.schematic-fullscreen__close:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.8);
+  outline-offset: 3px;
+}
+
+.schematic-fullscreen__canvas {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.schematic-fullscreen__canvas .schematic-canvas {
+  flex: 1;
+}
+
+.schematic-canvas--fullscreen {
+  padding: clamp(1.75rem, 2.5vw, 2.75rem);
+  border-radius: 30px;
+}
+
+.schematic-canvas--fullscreen svg {
+  height: 100%;
 }
 
 .schematic-connection__path {

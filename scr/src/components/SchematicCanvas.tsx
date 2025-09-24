@@ -4,7 +4,8 @@ import type { CircuitPlan } from '../types/circuit'
 
 const NODE_WIDTH = 200
 const NODE_HEIGHT = 120
-const TOP_PADDING = 160
+const VERTICAL_PADDING_TOP = 160
+const VERTICAL_PADDING_BOTTOM = 200
 const SIDE_PADDING = 140
 const COLUMN_GAP = 140
 const ROW_GAP = 150
@@ -108,9 +109,10 @@ const ICONS: Record<IconKey, ReactElement> = {
 
 interface SchematicCanvasProps {
   plan: CircuitPlan
+  className?: string
 }
 
-export function SchematicCanvas({ plan }: SchematicCanvasProps) {
+export function SchematicCanvas({ plan, className }: SchematicCanvasProps) {
   const layout = useMemo(() => {
     const positions = new Map<string, { x: number; y: number }>()
     const components = plan.components
@@ -126,14 +128,14 @@ export function SchematicCanvas({ plan }: SchematicCanvasProps) {
       const column = index % columns
       const row = Math.floor(index / columns)
       const x = SIDE_PADDING + column * columnWidth + NODE_WIDTH / 2
-      const y = TOP_PADDING + row * ROW_GAP
+      const y = VERTICAL_PADDING_TOP + row * ROW_GAP
       positions.set(component.id, { x, y })
     })
 
     if (components.length === 1) {
       const [first] = components
       if (first && !first.position) {
-        positions.set(first.id, { x: SIDE_PADDING + NODE_WIDTH / 2, y: TOP_PADDING })
+        positions.set(first.id, { x: SIDE_PADDING + NODE_WIDTH / 2, y: VERTICAL_PADDING_TOP })
       }
     }
 
@@ -143,10 +145,10 @@ export function SchematicCanvas({ plan }: SchematicCanvasProps) {
     let maxY = Number.NEGATIVE_INFINITY
 
     positions.forEach(({ x, y }) => {
-      minX = Math.min(minX, x)
-      maxX = Math.max(maxX, x)
-      minY = Math.min(minY, y)
-      maxY = Math.max(maxY, y)
+      minX = Math.min(minX, x - NODE_WIDTH / 2)
+      maxX = Math.max(maxX, x + NODE_WIDTH / 2)
+      minY = Math.min(minY, y - NODE_HEIGHT / 2)
+      maxY = Math.max(maxY, y + NODE_HEIGHT / 2)
     })
 
     if (!Number.isFinite(minX)) {
@@ -156,15 +158,26 @@ export function SchematicCanvas({ plan }: SchematicCanvasProps) {
       maxY = NODE_HEIGHT
     }
 
-    const width = Math.max(640, maxX - minX + SIDE_PADDING * 2)
-    const height = Math.max(480, maxY - minY + TOP_PADDING)
+    const contentWidth = maxX - minX
+    const contentHeight = maxY - minY
+    const width = Math.max(640, contentWidth + SIDE_PADDING * 2)
+    const height = Math.max(520, contentHeight + VERTICAL_PADDING_TOP + VERTICAL_PADDING_BOTTOM)
+    const originX = minX - SIDE_PADDING
+    const originY = minY - VERTICAL_PADDING_TOP
 
-    return { positions, width, height }
+    return { positions, width, height, originX, originY }
   }, [plan.components])
 
+  const canvasClassName = ['schematic-canvas', className].filter(Boolean).join(' ')
+
   return (
-    <div className="schematic-canvas">
-      <svg viewBox={`0 0 ${layout.width} ${layout.height}`} role="img" aria-label="Esquema del circuito propuesto">
+    <div className={canvasClassName}>
+      <svg
+        viewBox={`${layout.originX} ${layout.originY} ${layout.width} ${layout.height}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Esquema del circuito propuesto"
+      >
         <defs>
           <pattern id="schematic-grid" width="32" height="32" patternUnits="userSpaceOnUse">
             <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(148, 163, 184, 0.12)" strokeWidth="1" />
