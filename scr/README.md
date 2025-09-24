@@ -16,12 +16,15 @@ El asistente produce:
 ## Puesta en marcha
 
 ```bash
-# Instala dependencias
+# Instala dependencias desde la raíz del repositorio
 npm install
 
 # Ejecuta el entorno de desarrollo en http://localhost:5173
 npm run dev
 ```
+
+> Si prefieres operar directamente dentro del paquete puedes ejecutar los mismos comandos con
+> `npm --prefix scr install` y `npm --prefix scr run dev`.
 
 Cuando abras la aplicación:
 

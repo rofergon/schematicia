@@ -1,0 +1,13 @@
+{
+  "name": "schematicia",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "postinstall": "npm --prefix scr install",
+    "install:scr": "npm --prefix scr install",
+    "dev": "npm --prefix scr run dev",
+    "build": "npm --prefix scr run build",
+    "lint": "npm --prefix scr run lint",
+    "preview": "npm --prefix scr run preview"
+  }
+}
