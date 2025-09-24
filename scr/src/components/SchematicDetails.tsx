@@ -99,6 +99,23 @@ export function SchematicDetails({ plan }: SchematicDetailsProps) {
         </section>
       ) : null}
 
+      <section className="schematic-details__section schematic-details__section--info">
+        <h3>Recursos visuales</h3>
+        <p>
+          Para enriquecer la iconografía de tus diagramas puedes apoyarte en colecciones públicas como{' '}
+          <a
+            className="schematic-details__link"
+            href="https://tabler-icons.io/i/circuit-resistor"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Tabler Icons (paquete Circuit)
+          </a>
+          , que ofrece símbolos vectoriales de electrónica bajo licencia MIT, listos para incorporar en documentación o
+          presentaciones.
+        </p>
+      </section>
+
       <section className="schematic-details__section">
         <h3>JSON sugerido</h3>
         <pre className="schematic-details__json">{JSON.stringify(plan, null, 2)}</pre>
