@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import type { CircuitPlan } from '../types/circuit'
 import { SchematicCanvas } from './SchematicCanvas'
 
@@ -6,6 +8,30 @@ interface SchematicDetailsProps {
 }
 
 export function SchematicDetails({ plan }: SchematicDetailsProps) {
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
+
+  useEffect(() => {
+    if (!isFullscreenOpen) {
+      return
+    }
+
+    const originalOverflow = document.body.style.overflow
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsFullscreenOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = originalOverflow
+    }
+  }, [isFullscreenOpen])
+
   if (!plan) {
     return (
       <div className="schematic-placeholder">
@@ -30,7 +56,16 @@ export function SchematicDetails({ plan }: SchematicDetailsProps) {
         <p>{plan.summary}</p>
       </div>
 
-      <SchematicCanvas plan={plan} />
+      <div className="schematic-canvas-wrapper">
+        <SchematicCanvas plan={plan} />
+        <button
+          type="button"
+          className="schematic-canvas__fullscreen-button"
+          onClick={() => setIsFullscreenOpen(true)}
+        >
+          Pantalla completa
+        </button>
+      </div>
 
       <section className="schematic-details__section">
         <h3>Componentes</h3>
@@ -120,6 +155,35 @@ export function SchematicDetails({ plan }: SchematicDetailsProps) {
         <h3>JSON sugerido</h3>
         <pre className="schematic-details__json">{JSON.stringify(plan, null, 2)}</pre>
       </section>
+
+      {isFullscreenOpen ? (
+        <div
+          className="schematic-fullscreen"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Vista en pantalla completa del esquema propuesto"
+          onClick={() => setIsFullscreenOpen(false)}
+        >
+          <div className="schematic-fullscreen__panel" role="document" onClick={(event) => event.stopPropagation()}>
+            <div className="schematic-fullscreen__header">
+              <div>
+                <span className="schematic-fullscreen__eyebrow">Vista ampliada</span>
+                <h3>{plan.title}</h3>
+              </div>
+              <button
+                type="button"
+                className="schematic-fullscreen__close"
+                onClick={() => setIsFullscreenOpen(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+            <div className="schematic-fullscreen__canvas">
+              <SchematicCanvas plan={plan} className="schematic-canvas--fullscreen" />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
