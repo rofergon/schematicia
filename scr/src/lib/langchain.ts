@@ -72,7 +72,7 @@ export class StructuredOutputParser<T> {
 
 interface OpenAIMessage {
   role: ChatRole
-  content: Array<{ type: 'text'; text: string }>
+  content: Array<{ type: 'input_text'; text: string }>
 }
 
 interface ChatOpenAIOptions {
@@ -124,7 +124,7 @@ export class ChatOpenAI {
       temperature: this.temperature,
       input: messages.map<OpenAIMessage>((message) => ({
         role: message.role,
-        content: [{ type: 'text', text: message.content }],
+        content: [{ type: 'input_text', text: message.content }],
       })),
     }
 
