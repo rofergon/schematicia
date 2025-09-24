@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
+# Schematicia Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz web construida con Vite y React que combina LangChain con los modelos de OpenAI para generar propuestas de circuitos electrónicos a partir de instrucciones en lenguaje natural.
 
-Currently, two official plugins are available:
+El asistente produce:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Respuestas conversacionales que explican el diseño.
+- Una estructura JSON con componentes, conexiones, notas y advertencias.
+- Una visualización SVG sencilla del esquema para comprender las relaciones principales.
 
-## React Compiler
+## Requisitos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 20 o superior.
+- Una API key válida de OpenAI con acceso al modelo que quieras utilizar.
 
-## Expanding the ESLint configuration
+## Puesta en marcha
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Instala dependencias
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Ejecuta el entorno de desarrollo en http://localhost:5173
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Cuando abras la aplicación:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Despliega la sección **Configuración** en la parte superior derecha.
+2. Introduce tu API key de OpenAI. El valor se almacena únicamente en tu navegador mediante `localStorage`.
+3. Selecciona un modelo (por defecto `gpt-4o-mini`) o especifica uno personalizado.
+4. Ajusta la temperatura si necesitas respuestas más creativas.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Después, describe el circuito que deseas prototipar. El asistente sugerirá componentes y conexiones, y generará una visualización básica basada en el JSON devuelto por LangChain.
+
+## Personalización
+
+- El esquema JSON se valida en el navegador y se muestra en la sección derecha. Puedes copiarlo para integrarlo en otros flujos de trabajo.
+- El lienzo SVG interpreta posiciones sugeridas por el modelo (`position.x`, `position.y`). Si no se proporcionan, se calcula una cuadrícula automática.
+- El prompt del asistente se define en `src/lib/circuitDesigner.ts`; puedes adaptarlo para ajustarlo a tus normas de diseño.
+
+## Scripts disponibles
+
+- `npm run dev`: inicia Vite en modo desarrollo.
+- `npm run build`: genera la versión de producción y valida los tipos.
+- `npm run lint`: ejecuta ESLint sobre el proyecto.
+
+## Seguridad
+
+El proyecto no incluye backend. Las peticiones a OpenAI se realizan desde el navegador del usuario. Evita desplegar esta aplicación tal cual en producción sin incorporar un proxy seguro que proteja tu API key.
